@@ -4,7 +4,7 @@
 Upgrade an existing application from Vue 2 to Vue 3.
 Migrate the markup from Twig templates to Vue 3 components.
 #### Timeframe:
-1-2 hours.
+1 hour.
 ### Task Setup
 #### Project Background
 * Project allows to display and create list of products
@@ -23,7 +23,7 @@ Migrate the markup from Twig templates to Vue 3 components.
 #### Environment Setup
 This is a sample project, "blind" development required :)  
 #### Test Task Details
-* Implement all @TODOs withing the project
+* Implement all @TODOs within the project
     * Upgrade to Vue 3 from Vue 2
     * Use composition API
     * Add Vue translations library
