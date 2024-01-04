@@ -1,11 +1,18 @@
-import Vue from 'vue';
-import ProductTable from './components/ProductTable.vue';
-import store from './store/store.js';
+import { createApp } from 'vue'
+import { createI18n } from 'vue-i18n'
+import { createPinia } from 'pinia'
+import translations from './translations'
+import App from './App.vue'
 
-new Vue({
-  el: '#product-app',
-  store,
-  components: {
-    ProductTable
-  }
-});
+const i18n = createI18n({
+	locale: 'en',
+	fallbackLocale: 'en',
+	messages: translations,
+})
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(i18n)
+
+app.mount('#product')

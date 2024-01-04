@@ -1,13 +1,20 @@
 <template>
   <div>
-    <input type="text" placeholder="Search..." v-model="searchTerm" @input="filterProducts">
+    <input
+        v-model="searchTerm"
+        type="text"
+        :placeholder="$t('productTable.searchInputPlaceholder')"
+    >
     <table>
       <tr>
-        <th @click="sortBy('name')">Name</th>
-        <th @click="sortBy('price')">Price</th>
-        <th>Description</th>
+        <th @click="setCurrentSortField('name')">{{ $t('productTable.nameTh') }}</th>
+        <th @click="setCurrentSortField('price')">{{ $t('productTable.priceTh') }}</th>
+        <th>{{ $t('productTable.descriptionTh') }}</th>
       </tr>
-      <tr v-for="product in filteredProducts" :key="product.id">
+      <tr
+          v-for="product in sortedProducts"
+          :key="product.id"
+      >
         <td>{{ product.name }}</td>
         <td>{{ product.price }}</td>
         <td>{{ product.description }}</td>
@@ -16,41 +23,53 @@
   </div>
 </template>
 
-<script>
-// @TODO: rewrite with Vue 3 using composition API, enhance code
-// @TODO: add translations support for the static fields inside markup
-export default {
-  data() {
-    return {
-      products: [],
-      filteredProducts: [],
-      searchTerm: '',
-      currentSortField: null
-    };
-  },
-  mounted() {
-    this.$store.dispatch('fetchProducts');
-  },
-  computed: {
-    // Use the getter to get products
-    products() {
-      return this.$store.getters.allProducts;
+<script setup>
+  import {computed, ref, defineProps} from 'vue'
+
+  // Data
+  const searchTerm = ref('')
+  const currentSortField =  ref(null)
+
+  // Props
+  const props = defineProps({
+    products: {
+      type: Array,
+      default: () => [],
     },
-    filteredProducts() {
-      // @TODO: implement
+  })
+
+  // Computed
+  const filteredProducts = computed(() => {
+    if (searchTerm.value) {
+      return props.products.filter((item) => {
+        return item?.name?.includes(searchTerm.value) || item?.description?.includes(searchTerm.value)
+      })
     }
-  },
-  methods: {
-    filterProducts() {
-      // @TODO: implement filtering logic based on searchTerm
-    },
-    sortBy(field) {
-      // @TODO: implement sorting logic
+
+    return props.products
+  })
+
+  const sortedProducts = computed(() => {
+    if (currentSortField.value) {
+      // Sort by ASC
+      return filteredProducts.value.sort((a, b) => {
+        if (a[currentSortField.value] < b[currentSortField.value]) {
+          return -1;
+        }
+
+        if (a[currentSortField.value] > b[currentSortField.value]) {
+          return 1;
+        }
+
+        return 0
+      })
     }
+
+    return filteredProducts.value
+  })
+
+  // Methods
+  const setCurrentSortField = (value) => {
+    currentSortField.value = value
   }
-};
 </script>
-
-<style>
-
-</style>
